@@ -1,0 +1,475 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="Restaurant_ManagementModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="sysdiagram">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="tblBranch">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="StateId" Type="Int32" />
+    <Property Name="CityId" Type="Int32" />
+    <Property Name="CountryId" Type="Int32" />
+    <NavigationProperty Name="tblCity" Relationship="Self.FK_tblBranch_tblCity" FromRole="tblBranch" ToRole="tblCity" />
+    <NavigationProperty Name="tblCountry" Relationship="Self.FK_tblBranch_tblCountry" FromRole="tblBranch" ToRole="tblCountry" />
+    <NavigationProperty Name="tblState" Relationship="Self.FK_tblBranch_tblState" FromRole="tblBranch" ToRole="tblState" />
+    <NavigationProperty Name="tblTables" Relationship="Self.FK_tblTables_tblBranch" FromRole="tblBranch" ToRole="tblTables" />
+    <NavigationProperty Name="tblUsers" Relationship="Self.FK_tblUser_tblBranch" FromRole="tblBranch" ToRole="tblUser" />
+  </EntityType>
+  <EntityType Name="tblCity">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="tblBranches" Relationship="Self.FK_tblBranch_tblCity" FromRole="tblCity" ToRole="tblBranch" />
+    <NavigationProperty Name="tblCustomers" Relationship="Self.FK_tblCustomer_tblCity" FromRole="tblCity" ToRole="tblCustomer" />
+  </EntityType>
+  <EntityType Name="tblCountry">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="tblBranches" Relationship="Self.FK_tblBranch_tblCountry" FromRole="tblCountry" ToRole="tblBranch" />
+    <NavigationProperty Name="tblCustomers" Relationship="Self.FK_tblCustomer_tblCountry" FromRole="tblCountry" ToRole="tblCustomer" />
+  </EntityType>
+  <EntityType Name="tblCustomer">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="MobileNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="CountryId" Type="Int32" />
+    <Property Name="StateId" Type="Int32" />
+    <Property Name="CityId" Type="Int32" />
+    <NavigationProperty Name="tblCity" Relationship="Self.FK_tblCustomer_tblCity" FromRole="tblCustomer" ToRole="tblCity" />
+    <NavigationProperty Name="tblCountry" Relationship="Self.FK_tblCustomer_tblCountry" FromRole="tblCustomer" ToRole="tblCountry" />
+    <NavigationProperty Name="tblState" Relationship="Self.FK_tblCustomer_tblState" FromRole="tblCustomer" ToRole="tblState" />
+  </EntityType>
+  <EntityType Name="tblMenu">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ItemName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Category" Type="String" MaxLength="1" FixedLength="true" Unicode="true" />
+    <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Availability" Type="String" MaxLength="1" FixedLength="true" Unicode="true" />
+    <Property Name="FullPrice" Type="Double" />
+    <Property Name="HalfPrice" Type="Double" />
+    <NavigationProperty Name="tblOrderItems" Relationship="Self.FK_tblOrderItems_tblMenu" FromRole="tblMenu" ToRole="tblOrderItems" />
+  </EntityType>
+  <EntityType Name="tblOrder">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ReservationId" Type="Int32" />
+    <Property Name="OrderDateTime" Type="DateTime" Precision="3" />
+    <Property Name="TotalPrice" Type="Double" />
+    <Property Name="Status" Type="String" MaxLength="1" FixedLength="true" Unicode="true" />
+    <Property Name="Discount" Type="Double" />
+    <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+    <Property Name="CreatedByUserId" Type="Int32" />
+    <Property Name="ModifiedByUserId" Type="Int32" />
+    <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="tblReservation" Relationship="Self.FK_tblOrder_tblReservation" FromRole="tblOrder" ToRole="tblReservation" />
+    <NavigationProperty Name="tblUser" Relationship="Self.FK_tblOrder_tblUser" FromRole="tblOrder" ToRole="tblUser" />
+    <NavigationProperty Name="tblUser1" Relationship="Self.FK_tblOrder_tblUser1" FromRole="tblOrder" ToRole="tblUser" />
+    <NavigationProperty Name="tblOrderItems" Relationship="Self.FK_tblOrderItems_tblOrder" FromRole="tblOrder" ToRole="tblOrderItems" />
+    <NavigationProperty Name="tblPaymentTables" Relationship="Self.FK_tblPaymentTable_tblOrder" FromRole="tblOrder" ToRole="tblPaymentTable" />
+  </EntityType>
+  <EntityType Name="tblOrderItem">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="OrderId" Type="Int32" />
+    <Property Name="MenuId" Type="Int32" />
+    <Property Name="Quantity" Type="Int32" />
+    <Property Name="ItemPrice" Type="Double" />
+    <Property Name="TotalPrice" Type="Double" />
+    <Property Name="Status" Type="String" MaxLength="1" FixedLength="true" Unicode="true" />
+    <NavigationProperty Name="tblMenu" Relationship="Self.FK_tblOrderItems_tblMenu" FromRole="tblOrderItems" ToRole="tblMenu" />
+    <NavigationProperty Name="tblOrder" Relationship="Self.FK_tblOrderItems_tblOrder" FromRole="tblOrderItems" ToRole="tblOrder" />
+    <Property Name="Portion" Type="String" MaxLength="1" FixedLength="true" Unicode="true" />
+  </EntityType>
+  <EntityType Name="tblPaymentTable">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="OrderId" Type="Int32" />
+    <Property Name="PaymentMethod" Type="String" MaxLength="1" FixedLength="true" Unicode="true" />
+    <Property Name="PaymentAmount" Type="Double" />
+    <Property Name="PaymentStatus" Type="String" MaxLength="1" FixedLength="true" Unicode="true" />
+    <Property Name="PaymentDateTime" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="tblOrder" Relationship="Self.FK_tblPaymentTable_tblOrder" FromRole="tblPaymentTable" ToRole="tblOrder" />
+  </EntityType>
+  <EntityType Name="tblReservation">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TableId" Type="Int32" />
+    <Property Name="ReservationTimeFrom" Type="DateTime" Precision="3" />
+    <Property Name="ReservationTimeTo" Type="DateTime" Precision="3" />
+    <Property Name="Status" Type="String" MaxLength="1" FixedLength="true" Unicode="true" />
+    <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+    <Property Name="CreatedByUserId" Type="Int32" />
+    <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedByUserId" Type="Int32" />
+    <Property Name="CustomerId" Type="Int32" />
+    <NavigationProperty Name="tblOrders" Relationship="Self.FK_tblOrder_tblReservation" FromRole="tblReservation" ToRole="tblOrder" />
+    <NavigationProperty Name="tblUser" Relationship="Self.FK_tblReservation_tblUser" FromRole="tblReservation" ToRole="tblUser" />
+    <NavigationProperty Name="tblUser1" Relationship="Self.FK_tblReservation_tblUser1" FromRole="tblReservation" ToRole="tblUser" />
+  </EntityType>
+  <EntityType Name="tblState">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="tblBranches" Relationship="Self.FK_tblBranch_tblState" FromRole="tblState" ToRole="tblBranch" />
+    <NavigationProperty Name="tblCustomers" Relationship="Self.FK_tblCustomer_tblState" FromRole="tblState" ToRole="tblCustomer" />
+  </EntityType>
+  <EntityType Name="tblTable">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TableNumber" Type="String" MaxLength="10" Unicode="true" FixedLength="false" />
+    <Property Name="Seats" Type="Int32" />
+    <Property Name="Discription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="BranchId" Type="Int32" />
+    <NavigationProperty Name="tblBranch" Relationship="Self.FK_tblTables_tblBranch" FromRole="tblTables" ToRole="tblBranch" />
+  </EntityType>
+  <EntityType Name="tblUser">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserName" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+    <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="RePassword" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="FullName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="MobileNo" Type="Int32" />
+    <Property Name="UserRoleId" Type="Int32" />
+    <Property Name="BranchId" Type="Int32" />
+    <NavigationProperty Name="tblBranch" Relationship="Self.FK_tblUser_tblBranch" FromRole="tblUser" ToRole="tblBranch" />
+    <NavigationProperty Name="tblOrders" Relationship="Self.FK_tblOrder_tblUser" FromRole="tblUser" ToRole="tblOrder" />
+    <NavigationProperty Name="tblOrders1" Relationship="Self.FK_tblOrder_tblUser1" FromRole="tblUser" ToRole="tblOrder" />
+    <NavigationProperty Name="tblReservations" Relationship="Self.FK_tblReservation_tblUser" FromRole="tblUser" ToRole="tblReservation" />
+    <NavigationProperty Name="tblReservations1" Relationship="Self.FK_tblReservation_tblUser1" FromRole="tblUser" ToRole="tblReservation" />
+    <NavigationProperty Name="tblUserRole" Relationship="Self.FK_tblUser_tblUserRoles" FromRole="tblUser" ToRole="tblUserRoles" />
+  </EntityType>
+  <EntityType Name="tblUserRole">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="RoleName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="tblUsers" Relationship="Self.FK_tblUser_tblUserRoles" FromRole="tblUserRoles" ToRole="tblUser" />
+  </EntityType>
+  <Association Name="FK_tblBranch_tblCity">
+    <End Role="tblCity" Type="Self.tblCity" Multiplicity="0..1" />
+    <End Role="tblBranch" Type="Self.tblBranch" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblCity">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblBranch">
+        <PropertyRef Name="CityId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_tblBranch_tblCountry">
+    <End Role="tblCountry" Type="Self.tblCountry" Multiplicity="0..1" />
+    <End Role="tblBranch" Type="Self.tblBranch" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblCountry">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblBranch">
+        <PropertyRef Name="CountryId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_tblBranch_tblState">
+    <End Role="tblState" Type="Self.tblState" Multiplicity="0..1" />
+    <End Role="tblBranch" Type="Self.tblBranch" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblState">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblBranch">
+        <PropertyRef Name="StateId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_tblTables_tblBranch">
+    <End Role="tblBranch" Type="Self.tblBranch" Multiplicity="0..1" />
+    <End Role="tblTables" Type="Self.tblTable" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblBranch">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblTables">
+        <PropertyRef Name="BranchId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_tblUser_tblBranch">
+    <End Role="tblBranch" Type="Self.tblBranch" Multiplicity="0..1" />
+    <End Role="tblUser" Type="Self.tblUser" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblBranch">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblUser">
+        <PropertyRef Name="BranchId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_tblCustomer_tblCity">
+    <End Role="tblCity" Type="Self.tblCity" Multiplicity="0..1" />
+    <End Role="tblCustomer" Type="Self.tblCustomer" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblCity">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblCustomer">
+        <PropertyRef Name="CityId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_tblCustomer_tblCountry">
+    <End Role="tblCountry" Type="Self.tblCountry" Multiplicity="0..1" />
+    <End Role="tblCustomer" Type="Self.tblCustomer" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblCountry">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblCustomer">
+        <PropertyRef Name="CountryId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_tblCustomer_tblState">
+    <End Role="tblState" Type="Self.tblState" Multiplicity="0..1" />
+    <End Role="tblCustomer" Type="Self.tblCustomer" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblState">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblCustomer">
+        <PropertyRef Name="StateId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_tblOrderItems_tblMenu">
+    <End Role="tblMenu" Type="Self.tblMenu" Multiplicity="0..1" />
+    <End Role="tblOrderItems" Type="Self.tblOrderItem" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblMenu">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblOrderItems">
+        <PropertyRef Name="MenuId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_tblOrder_tblReservation">
+    <End Role="tblReservation" Type="Self.tblReservation" Multiplicity="0..1" />
+    <End Role="tblOrder" Type="Self.tblOrder" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblReservation">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblOrder">
+        <PropertyRef Name="ReservationId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_tblOrder_tblUser">
+    <End Role="tblUser" Type="Self.tblUser" Multiplicity="0..1" />
+    <End Role="tblOrder" Type="Self.tblOrder" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblOrder">
+        <PropertyRef Name="CreatedByUserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_tblOrder_tblUser1">
+    <End Role="tblUser" Type="Self.tblUser" Multiplicity="0..1" />
+    <End Role="tblOrder" Type="Self.tblOrder" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblOrder">
+        <PropertyRef Name="ModifiedByUserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_tblOrderItems_tblOrder">
+    <End Role="tblOrder" Type="Self.tblOrder" Multiplicity="0..1" />
+    <End Role="tblOrderItems" Type="Self.tblOrderItem" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblOrder">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblOrderItems">
+        <PropertyRef Name="OrderId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_tblPaymentTable_tblOrder">
+    <End Role="tblOrder" Type="Self.tblOrder" Multiplicity="0..1" />
+    <End Role="tblPaymentTable" Type="Self.tblPaymentTable" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblOrder">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblPaymentTable">
+        <PropertyRef Name="OrderId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_tblReservation_tblUser">
+    <End Role="tblUser" Type="Self.tblUser" Multiplicity="0..1" />
+    <End Role="tblReservation" Type="Self.tblReservation" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblReservation">
+        <PropertyRef Name="CreatedByUserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_tblReservation_tblUser1">
+    <End Role="tblUser" Type="Self.tblUser" Multiplicity="0..1" />
+    <End Role="tblReservation" Type="Self.tblReservation" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblReservation">
+        <PropertyRef Name="ModifiedByUserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_tblUser_tblUserRoles">
+    <End Role="tblUserRoles" Type="Self.tblUserRole" Multiplicity="0..1" />
+    <End Role="tblUser" Type="Self.tblUser" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblUserRoles">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblUser">
+        <PropertyRef Name="UserRoleId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="Restaurant_ManagementEntities1" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+    <EntitySet Name="tblBranches" EntityType="Self.tblBranch" />
+    <EntitySet Name="tblCities" EntityType="Self.tblCity" />
+    <EntitySet Name="tblCountries" EntityType="Self.tblCountry" />
+    <EntitySet Name="tblCustomers" EntityType="Self.tblCustomer" />
+    <EntitySet Name="tblMenus" EntityType="Self.tblMenu" />
+    <EntitySet Name="tblOrders" EntityType="Self.tblOrder" />
+    <EntitySet Name="tblOrderItems" EntityType="Self.tblOrderItem" />
+    <EntitySet Name="tblPaymentTables" EntityType="Self.tblPaymentTable" />
+    <EntitySet Name="tblReservations" EntityType="Self.tblReservation" />
+    <EntitySet Name="tblStates" EntityType="Self.tblState" />
+    <EntitySet Name="tblTables" EntityType="Self.tblTable" />
+    <EntitySet Name="tblUsers" EntityType="Self.tblUser" />
+    <EntitySet Name="tblUserRoles" EntityType="Self.tblUserRole" />
+    <AssociationSet Name="FK_tblBranch_tblCity" Association="Self.FK_tblBranch_tblCity">
+      <End Role="tblCity" EntitySet="tblCities" />
+      <End Role="tblBranch" EntitySet="tblBranches" />
+    </AssociationSet>
+    <AssociationSet Name="FK_tblBranch_tblCountry" Association="Self.FK_tblBranch_tblCountry">
+      <End Role="tblCountry" EntitySet="tblCountries" />
+      <End Role="tblBranch" EntitySet="tblBranches" />
+    </AssociationSet>
+    <AssociationSet Name="FK_tblBranch_tblState" Association="Self.FK_tblBranch_tblState">
+      <End Role="tblState" EntitySet="tblStates" />
+      <End Role="tblBranch" EntitySet="tblBranches" />
+    </AssociationSet>
+    <AssociationSet Name="FK_tblTables_tblBranch" Association="Self.FK_tblTables_tblBranch">
+      <End Role="tblBranch" EntitySet="tblBranches" />
+      <End Role="tblTables" EntitySet="tblTables" />
+    </AssociationSet>
+    <AssociationSet Name="FK_tblUser_tblBranch" Association="Self.FK_tblUser_tblBranch">
+      <End Role="tblBranch" EntitySet="tblBranches" />
+      <End Role="tblUser" EntitySet="tblUsers" />
+    </AssociationSet>
+    <AssociationSet Name="FK_tblCustomer_tblCity" Association="Self.FK_tblCustomer_tblCity">
+      <End Role="tblCity" EntitySet="tblCities" />
+      <End Role="tblCustomer" EntitySet="tblCustomers" />
+    </AssociationSet>
+    <AssociationSet Name="FK_tblCustomer_tblCountry" Association="Self.FK_tblCustomer_tblCountry">
+      <End Role="tblCountry" EntitySet="tblCountries" />
+      <End Role="tblCustomer" EntitySet="tblCustomers" />
+    </AssociationSet>
+    <AssociationSet Name="FK_tblCustomer_tblState" Association="Self.FK_tblCustomer_tblState">
+      <End Role="tblState" EntitySet="tblStates" />
+      <End Role="tblCustomer" EntitySet="tblCustomers" />
+    </AssociationSet>
+    <AssociationSet Name="FK_tblOrderItems_tblMenu" Association="Self.FK_tblOrderItems_tblMenu">
+      <End Role="tblMenu" EntitySet="tblMenus" />
+      <End Role="tblOrderItems" EntitySet="tblOrderItems" />
+    </AssociationSet>
+    <AssociationSet Name="FK_tblOrder_tblReservation" Association="Self.FK_tblOrder_tblReservation">
+      <End Role="tblReservation" EntitySet="tblReservations" />
+      <End Role="tblOrder" EntitySet="tblOrders" />
+    </AssociationSet>
+    <AssociationSet Name="FK_tblOrder_tblUser" Association="Self.FK_tblOrder_tblUser">
+      <End Role="tblUser" EntitySet="tblUsers" />
+      <End Role="tblOrder" EntitySet="tblOrders" />
+    </AssociationSet>
+    <AssociationSet Name="FK_tblOrder_tblUser1" Association="Self.FK_tblOrder_tblUser1">
+      <End Role="tblUser" EntitySet="tblUsers" />
+      <End Role="tblOrder" EntitySet="tblOrders" />
+    </AssociationSet>
+    <AssociationSet Name="FK_tblOrderItems_tblOrder" Association="Self.FK_tblOrderItems_tblOrder">
+      <End Role="tblOrder" EntitySet="tblOrders" />
+      <End Role="tblOrderItems" EntitySet="tblOrderItems" />
+    </AssociationSet>
+    <AssociationSet Name="FK_tblPaymentTable_tblOrder" Association="Self.FK_tblPaymentTable_tblOrder">
+      <End Role="tblOrder" EntitySet="tblOrders" />
+      <End Role="tblPaymentTable" EntitySet="tblPaymentTables" />
+    </AssociationSet>
+    <AssociationSet Name="FK_tblReservation_tblUser" Association="Self.FK_tblReservation_tblUser">
+      <End Role="tblUser" EntitySet="tblUsers" />
+      <End Role="tblReservation" EntitySet="tblReservations" />
+    </AssociationSet>
+    <AssociationSet Name="FK_tblReservation_tblUser1" Association="Self.FK_tblReservation_tblUser1">
+      <End Role="tblUser" EntitySet="tblUsers" />
+      <End Role="tblReservation" EntitySet="tblReservations" />
+    </AssociationSet>
+    <AssociationSet Name="FK_tblUser_tblUserRoles" Association="Self.FK_tblUser_tblUserRoles">
+      <End Role="tblUserRoles" EntitySet="tblUserRoles" />
+      <End Role="tblUser" EntitySet="tblUsers" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

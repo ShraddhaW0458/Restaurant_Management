@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="a8e10de1b0924a9cb97b6bf99564ec77" Name="Diagram1">
+        <EntityTypeShape EntityType="Restaurant_ManagementModel.sysdiagram" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Restaurant_ManagementModel.tblBranch" Width="1.5" PointX="3" PointY="8.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Restaurant_ManagementModel.tblCity" Width="1.5" PointX="0.75" PointY="9.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="Restaurant_ManagementModel.tblCountry" Width="1.5" PointX="0.75" PointY="5.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Restaurant_ManagementModel.tblCustomer" Width="1.5" PointX="6" PointY="8.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Restaurant_ManagementModel.tblMenu" Width="1.5" PointX="12.75" PointY="7" IsExpanded="true" />
+        <EntityTypeShape EntityType="Restaurant_ManagementModel.tblOrder" Width="1.5" PointX="12.75" PointY="10.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Restaurant_ManagementModel.tblOrderItem" Width="1.5" PointX="15" PointY="10.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Restaurant_ManagementModel.tblPaymentTable" Width="1.5" PointX="15" PointY="14.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Restaurant_ManagementModel.tblReservation" Width="1.5" PointX="10.5" PointY="12.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Restaurant_ManagementModel.tblState" Width="1.5" PointX="0.75" PointY="12.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Restaurant_ManagementModel.tblTable" Width="1.5" PointX="5.25" PointY="13" IsExpanded="true" />
+        <EntityTypeShape EntityType="Restaurant_ManagementModel.tblUser" Width="1.5" PointX="8.25" PointY="8.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="Restaurant_ManagementModel.tblUserRole" Width="1.5" PointX="6" PointY="5.25" IsExpanded="true" />
+        <AssociationConnector Association="Restaurant_ManagementModel.FK_tblBranch_tblCity" ManuallyRouted="false" />
+        <AssociationConnector Association="Restaurant_ManagementModel.FK_tblBranch_tblCountry" ManuallyRouted="false" />
+        <AssociationConnector Association="Restaurant_ManagementModel.FK_tblBranch_tblState" ManuallyRouted="false" />
+        <AssociationConnector Association="Restaurant_ManagementModel.FK_tblTables_tblBranch" ManuallyRouted="false" />
+        <AssociationConnector Association="Restaurant_ManagementModel.FK_tblUser_tblBranch" ManuallyRouted="false" />
+        <AssociationConnector Association="Restaurant_ManagementModel.FK_tblCustomer_tblCity" ManuallyRouted="false" />
+        <AssociationConnector Association="Restaurant_ManagementModel.FK_tblCustomer_tblCountry" ManuallyRouted="false" />
+        <AssociationConnector Association="Restaurant_ManagementModel.FK_tblCustomer_tblState" ManuallyRouted="false" />
+        <AssociationConnector Association="Restaurant_ManagementModel.FK_tblOrderItems_tblMenu" ManuallyRouted="false" />
+        <AssociationConnector Association="Restaurant_ManagementModel.FK_tblOrder_tblReservation" ManuallyRouted="false" />
+        <AssociationConnector Association="Restaurant_ManagementModel.FK_tblOrder_tblUser" ManuallyRouted="false" />
+        <AssociationConnector Association="Restaurant_ManagementModel.FK_tblOrder_tblUser1" ManuallyRouted="false" />
+        <AssociationConnector Association="Restaurant_ManagementModel.FK_tblOrderItems_tblOrder" ManuallyRouted="false" />
+        <AssociationConnector Association="Restaurant_ManagementModel.FK_tblPaymentTable_tblOrder" ManuallyRouted="false" />
+        <AssociationConnector Association="Restaurant_ManagementModel.FK_tblReservation_tblUser" ManuallyRouted="false" />
+        <AssociationConnector Association="Restaurant_ManagementModel.FK_tblReservation_tblUser1" ManuallyRouted="false" />
+        <AssociationConnector Association="Restaurant_ManagementModel.FK_tblUser_tblUserRoles" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

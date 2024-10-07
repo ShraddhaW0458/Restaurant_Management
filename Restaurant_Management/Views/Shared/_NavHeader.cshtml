@@ -1,0 +1,56 @@
+﻿@*@model IEnumerable<tblNavHeader>*@
+
+<nav class="navbar navbar-expand-lg bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Navbar</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                @{
+                    foreach (var item in Model)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="@Url.Action(item.ActionName, item.ControllerName)">@item.Title</a>
+                        </li>
+                    }
+
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="@Url.Action("Create","User")">Create User</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="@Url.Action("LoginUser","User")">Login</a>
+                    </li>
+                }
+            </ul>
+
+            @{
+                string UID = User.Identity.Name;
+                tblUser obj = null;
+                using (var ctx = new Restaurant_ManagementEntities1())
+                {
+                    obj = ctx.tblUsers.Where(w => w.UserName == UID).FirstOrDefault();
+
+                }
+
+                <ul class="navbar-nav ms-auto">
+                    <!-- Use ms-auto to align Username and Logout to the right -->
+                    <li class="nav-item d-flex justify-content-center">
+                        @if (obj != null)
+                        {
+                            <span class="navbar-text me-5 ">
+                                <!-- Use me-3 for margin-right to space it from Logout -->
+                                @obj.UserName
+                            </span>
+                        }
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="@Url.Action("Logout", "User")">Logout</a>
+                    </li>
+                </ul>
+            }
+        </div>
+    </div>
+</nav>

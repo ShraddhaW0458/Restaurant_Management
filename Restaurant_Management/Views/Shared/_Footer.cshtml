@@ -1,0 +1,46 @@
+﻿@*@model IEnumerable<tblMenuHeader>*@
+
+<div class="container-fluid bg-black text-white">
+    <div class="row">
+        <div class="col-3">
+            <ul type="none">
+                @foreach (var item in Model.Take(5).ToList())
+                {
+                    <a href="@Url.Action(item.ActionName, item.ControllerName)">
+                    <li>@item.Title</li>
+                    </a>
+                }
+            </ul>
+        </div>
+        <div class="col-3">
+            <ul type="none">
+                @foreach (var item in Model.Skip(5).Take(5).ToList())
+                {
+                    <a href="@Url.Action(item.ActionName, item.ControllerName)">
+                    <li>@item.Title</li>
+                    </a>
+                }
+            </ul>
+        </div>
+        <div class="col-3">
+            <ul type="none">
+                @foreach (var item in Model.Skip(10).Take(5).ToList())
+                {
+                    <a href="@Url.Action(item.ActionName, item.ControllerName)">
+                    <li>@item.Title</li>
+                    </a>
+                }
+            </ul>
+        </div>
+        <div class="col-3">
+            <ul type="none">
+                @foreach (var item in Model.Skip(15).Take(5).ToList())
+                {
+                    <a href="@Url.Action(item.ActionName, item.ControllerName)">
+                    <li>@item.Title</li>
+                    </a>
+                }
+            </ul>
+        </div>
+    </div>
+</div>

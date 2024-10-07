@@ -1,0 +1,149 @@
+﻿@model Restaurant_Management.Models.Menu_Items
+
+
+
+@{ ViewBag.Title = "CreateMenu";
+}
+
+<h2>CreateMenu</h2>
+<hr />
+
+<div class="container">
+    <div class="row">
+        <div class="col-4">
+            @using (Html.BeginForm())
+            {
+@Html.AntiForgeryToken()
+
+                <div class="form-horizontal">
+
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            @Html.HiddenFor(model => model.Id, new { htmlAttributes = new { @class = "form-control" } })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ItemName, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.ItemName, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.ItemName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Category, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.DropDownListFor(model => model.Category, new List<SelectListItem>
+                            {
+                                new SelectListItem { Text = "Starters", Value = "S" },
+                                new SelectListItem { Text = "Main course", Value = "M" },
+                                new SelectListItem { Text = "Dessert", Value = "D" },
+                                new SelectListItem { Text = "Refreshment", Value = "R" }
+                            }, "~Select a category~", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Category, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Availability, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.DropDownListFor(model => model.Availability, new List<SelectListItem>
+                             {
+                                 new SelectListItem { Text = "Available", Value = "A" },
+                                 new SelectListItem { Text = "Unavailable", Value = "U" }
+                             }, "~Select a Availability~", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Availability, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.FullPrice, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.FullPrice, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.FullPrice, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.HalfPrice, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.HalfPrice, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.HalfPrice, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="submit" value="Create" class="btn btn-success mt-2 mb-2" />
+                        </div>
+                        @if (ViewBag.msg != null)
+                        {
+                            <div class="alert alert-success">
+                                @ViewBag.msg
+                            </div>
+                        }
+
+                    </div>
+                </div>            }
+
+            <script src="~/JS/jquery.validate.js"></script>
+            <script src="~/JS/jquery.validate.unobtrusive.min.js"></script>
+        </div>
+
+        <div class="col-8">
+            @if (TempData["msg"] != null)
+            {
+                <div class="alert alert-danger">
+                    @TempData["msg"]
+                </div>            
+            }
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>ItemName</th>
+                        <th>Category</th>
+                        <th>Discription</th>
+                        <th>Availability</th>
+                        <th>FullPrice</th>
+                        <th>HalfPrice</th>
+                        <th>Operations</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in ViewBag.Menu)
+                    {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.ItemName</td>
+                        <td>@item.Category</td>
+                        <td>@item.Description</td>
+                        <td>@item.Availability</td>
+                        <td>@item.FullPrice</td>
+                        <td>@item.HalfPrice</td>
+                        <td>
+                            @Html.ActionLink("Edit", "CreateMenu", new { Id = item.Id }, new { @class = "btn btn-sm btn-info" })
+                            @Html.ActionLink("Delete", "Delete", new { Id = item.Id }, new { @class = "btn btn-sm btn-danger" })
+                        </td>
+                    </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+

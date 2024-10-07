@@ -1,0 +1,281 @@
+﻿
+
+@{
+    ViewBag.Title = "Index";
+}
+<link href="~/CSS/bootstrap.min.css" rel="stylesheet" />
+<link href="~/CSS/dataTables.dataTables.min.css" rel="stylesheet" />
+<script src="~/JS/bootstrap.bundle.min.js"></script>
+<script src="~/JS/dataTables.min.js"></script>
+<script src="~/JS/jquery-3.7.1.min.js"></script>
+<link href="~/CSS/bootstrap-icons.min.css" rel="stylesheet" />
+
+<h2>Index</h2>
+
+<div class="row">
+
+    <div class="col-8">
+        @foreach (var item in ViewBag.Tables)
+        {
+
+            <button class="btn btn-sm btn-secondary" value="@item.TableNumber" style="position: relative; width: 100px; height: 100px;" onclick="updateTableId(this)">
+                @item.TableNumber
+                <svg width="16" height="16" fill="currentColor" class="bi bi-circle-fill" viewBox="0 0 16 16"
+                     style="position: absolute; top: 5px; right: 5px;">
+                    <circle cx="8" cy="8" r="8" />
+                </svg>
+            </button>
+
+
+        }
+    </div>
+
+    <div class="col-4">
+        <!--Table Number-->
+        <div class="row card-body shadow-sm rounded-2 p-2">
+            <h6>Master Form</h6>
+            <hr />
+            <div class="col-4 ">
+                <label id="lblTbl_Number"> Table No.</label>
+            </div>
+
+            <div class="col-4 ">
+                <input id="txtTbl_Number" type="number" disabled="disabled" name="name" value="" />
+            </div>
+        </div>
+        <!--Customer Details-->
+        <div class="row mt-2 card-body shadow-sm rounded-2 p-2">
+            <h6 style="display:flex; width:300px; float:left">Customer Details</h6>
+            <button style="width:100px" type="button" id="btnAddCustomer" class="btn btn-sm btn-success mb-2">Save</button>
+            <hr />
+            <div class="col-6 "><input class="form-control" type="text" id="Cust_Name" placeholder="Customer Name" value="" /></div>
+            <div class="col-6 "><input class="form-control" type="text" id="Cust_MobileNo" placeholder="Mobile No." value="" /></div>
+            @*<div class="col-6"><input class="form-control" type="text" id="Cust_Address" placeholder="Customer Address" value="" /></div>*@
+
+        </div>
+        <!--Order Detatils-->
+        <div class="row mt-2 card-body shadow-sm rounded-2 p-2">
+            <h6>Order Details</h6>
+            <hr />
+            <div class="col-4 ">
+                <label>Order Items</label>
+            </div>
+            <div class="col-2 text-start ">
+                <button id="btn_AddOrderItems" class="btn btn-sm btn-info">Add</button>
+            </div>
+
+            <div class="col-3 ">
+                <label>Order Id</label>
+            </div>
+            <div class="col-3 ">
+                <input type="text" id="Order_Id" disabled="disabled" style="width: 80px;" />
+            </div>
+        </div>
+        <!--List of order items-->
+        <div class="row mt-2 card-body shadow-sm rounded-2 p-2">
+            <h6>Order Item List</h6>
+            <hr />
+            <table class="table table-responsive table-bordered ">
+                <thead style="vertical-align: middle">
+                    <tr>
+                        <th>Id</th>
+                        <th>Menu Name</th>
+                        <th>Portion</th>
+                        <th>Quantity</th>
+                        <th>Item Price</th>
+                        <th>Total Price</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @*@foreach (var item in ViewBag.OrderItems)
+                        {
+                            <tr>
+                                <td>@item.Id</td>
+                                <td>@item.MenuName</td>
+                                <td>@item.Portion</td>
+                                <td>@item.ItemPrice</td>
+                                <td>@item.TotalPrice</td>
+                                <td>@item.Status</td>
+                                <td>
+                                    @Html.ActionLink("Edit", "", new { Id = item.Id }, new { @class = "btn btn-sm btn-info" })
+                                    @Html.ActionLink("Delete", "", new { Id = item.Id }, new { @class = "btn btn-sm btn-danger" })
+                                </td>
+                            </tr>
+                        }*@
+                </tbody>
+            </table>
+        </div>
+
+        @*Modal pop up*@
+        <div id="Modal_Popup" class="modal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Order Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Modal body text goes here.</p>
+                        <!-- Hidden OrderId Input -->
+                        <input type="hidden" id="Order_Id" name="OrderId"  /> 
+
+                        <!-- Menu Dropdown -->
+                        <div class="form-group">
+                            <label for="MenuId">Menu Item</label>
+                            <select id="MenuId" name="MenuId" class="form-control">
+                                <option value="">~Select an item~</option>
+                                @foreach (var item in ViewBag.ItemList as SelectList)
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            </select>
+                        </div>
+
+                        <!-- Quantity Input -->
+                        <div class="form-group">
+                            <label for="Quantity">Quantity</label>
+                            <input type="number" id="Quantity" name="Quantity" class="form-control" placeholder="Enter Quantity" />
+                        </div>
+
+                        <!-- Item Price Input -->
+                        <div class="form-group">
+                            <label for="ItemPrice">Item Price</label>
+                            <input type="number" id="ItemPrice" name="ItemPrice" class="form-control" placeholder="Enter Item Price" step="0.01" />
+                        </div>
+
+                        <!-- Status Dropdown -->
+                        <div class="form-group">
+                            <label for="Status">Status</label>
+                            <select id="Status" name="Status" class="form-control">
+                                <option value="">~Select a status~</option>
+                                <option value="P">Pending</option>
+                                <option value="I">In Process</option>
+                                <option value="S">Served</option>
+                                <option value="C">Cancelled</option>
+                            </select>
+                        </div>
+
+                        <!-- Portion Dropdown -->
+                        <div class="form-group">
+                            <label for="Portion">Portion</label>
+                            <select id="Portion" name="Portion" class="form-control">
+                                <option value="">~Select Portion~</option>
+                                <option value="F">Full</option>
+                                <option value="H">Half</option>
+                            </select>
+                        </div>
+
+                        <!-- Created By (Read-Only or Editable) -->
+                        <div class="form-group">
+                            <label for="CreatedBy">Created By</label>
+                            <input type="text" id="CreatedBy" name="CreatedBy" class="form-control" value="1" readonly />
+                        </div>
+
+                        <!-- Created On (Read-Only) -->
+                        <div class="form-group">
+                            <label for="CreatedOn">Created On</label>
+                            <input type="text" id="CreatedOn" name="CreatedOn" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")" readonly />
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button id="ModalPopup_close" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button id="btnSave_OrderItems" type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+    </div>
+</div>
+
+<script>
+    function updateTableId(button) {
+
+        var tableNumber = button.value;     // This fetches the value from the button
+        document.getElementById("txtTbl_Number").value = tableNumber;    // Set the textbox value to the table number
+    }
+
+    $('#btn_AddOrderItems').click(function () {
+
+
+        $('#Modal_Popup').show();
+    });
+
+    $('#ModalPopup_close').click(function () {
+
+
+        $('#Modal_Popup').hide();
+    });
+
+    $('#btnSave_OrderItems').click(function () {
+
+        alert("ok");
+        $('#Modal_Popup').hide();
+        var MenuId = document.getElementById('MenuId').value || null;
+        var Quantity = document.getElementById('Quantity').value || null;
+        var ItemPrice = document.getElementById('ItemPrice').value || null;
+        var Status = document.getElementById('Status').value || "";
+        var Portion = document.getElementById('Portion').value || "";
+        var OrderId = document.getElementById('Order_Id').value || null;
+
+        // Debugging log for confirmation
+        console.log({ MenuId, Quantity, ItemPrice, Status, Portion, Order_Id });
+
+
+        //getall fields value in variable
+         $.ajax({
+                "url": "@Url.Action("SaveOrderItems", "Master")",
+                "method": "POST",
+                "contentType": "application/json; charset=utf-8",
+                "data": JSON.stringify({
+                    MenuId: MenuId ? parseInt(MenuId) : null,
+                    Quantity: Quantity ? parseInt(Quantity) : null,
+                    ItemPrice: ItemPrice ? parseFloat(ItemPrice) : null,
+                    Status: Status,
+                    Portion: Portion,
+                    OrderId: OrderId ? parseInt(OrderId) : null
+                }),
+             "success": function (response) {
+                    console.log("success", response);
+
+
+                },
+             "error": function (response) {
+                 console.log("error", response);
+                }
+            });
+    });
+
+    $('#btnAddCustomer').click(function () {
+
+
+        var custName = document.getElementById('Cust_Name').value;
+        var custMobNo = document.getElementById('Cust_MobileNo').value;
+        var tableNumber = document.getElementById("txtTbl_Number").value;
+        console.log(custName, custMobNo);
+
+        if (custName != null && custMobNo != null && tableNumber!=null) {
+
+            $.ajax({
+                "url": "@Url.Action("SaveCustomer", "Master")",
+                "method": "post",
+                "contentType": "application/json",
+                "data": JSON.stringify({ Name: custName, MobileNo: custMobNo, TableNumber: tableNumber }),
+                "success": function (success) {
+                    console.log("success", success);
+
+                    document.getElementById('Order_Id').value = success;
+                },
+                "error": function (error) {
+                    console.log("error", error);
+                }
+            });
+        }
+    });
+</script>
+
+
+
