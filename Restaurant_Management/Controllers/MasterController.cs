@@ -113,6 +113,52 @@ namespace Restaurant_Management.Controllers
             return Json(result);
         }
 
+        public ActionResult CheckTable(int TableNumber)
+        {
+            var res =  ctx.tblReservations
+                .Where(w => w.TableId == TableNumber)
+                .OrderByDescending(o => o.Status)
+                .Select(s => new { s.Status, s.TableId, s.CustomerId, s.Id})
+                .FirstOrDefault();
+
+            if(res.Status != "A")
+            {
+                tblCustomer c = ctx.tblCustomers.Where(w => w.Id == res.CustomerId).FirstOrDefault();
+                tblOrder o = ctx.tblOrders.Where(w => w.ReservationId == res.Id).FirstOrDefault();
+                List<tblOrderItem> OrderItemList = ctx.tblOrderItems.Where(w => w.OrderId == o.Id).ToList();
+
+                var result = OrderItemList.Select(item => new
+                {
+                    item.Id,
+                    item.tblMenu.ItemName,
+                    item.ItemPrice,
+                    item.TotalPrice,
+                    item.Quantity,
+                    item.Status,
+                    item.Portion
+                }).ToList();
+
+                // Assuming you already have c, o, and result from your existing code:
+                var output = new
+                {
+                    customerName = c.Name,  // Adjust to actual property for customer name
+                    customerMobileNo = c.MobileNo,
+                    
+                    orderId = o.Id,
+                    
+                    orderItems = result // The list of selected items
+                };
+
+                return Json(output);
+
+            }
+            else
+            {
+                return Json(true);
+            }
+
+            return Json(null);
+        }
 
     }
 }

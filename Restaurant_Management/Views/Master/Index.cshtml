@@ -179,10 +179,68 @@
 </div>
 
 <script>
+
+    var PreviousSelectedTable = 0;
+
+
+    //Select 4     //5 updated
     function updateTableId(button) {
 
-        var tableNumber = button.value;     // This fetches the value from the button
-        document.getElementById("txtTbl_Number").value = tableNumber;    // Set the textbox value to the table number
+        PreviousSelectedTable = document.getElementById("txtTbl_Number").value;   //null    //updated 4
+        if (PreviousSelectedTable != null && PreviousSelectedTable != undefined) {
+            console.log(PreviousSelectedTable);
+        }
+
+
+        var tableNumber = button.value;     // This fetches the value from the button   //updated 5
+        document.getElementById("txtTbl_Number").value = tableNumber;    // Set the textbox value to the table number   //4  //5  
+
+        if (PreviousSelectedTable != null && PreviousSelectedTable != undefined) {
+            if (PreviousSelectedTable == tableNumber) {
+
+                console.log("PreviousSelectedTable, tableNumber", PreviousSelectedTable, tableNumber);
+
+            }
+            else if (PreviousSelectedTable != tableNumber) {
+
+                console.log("PreviousSelectedTable, tableNumber", PreviousSelectedTable, tableNumber);
+
+                //Modal Popup null
+                document.getElementById('MenuId').value = null;
+                document.getElementById('Quantity').value = null;
+                document.getElementById('ItemPrice').value = null;
+                document.getElementById('Status').value = "";
+                document.getElementById('Portion').value = "";
+                document.getElementById('Order_Id').value = null;
+
+                //customer details null
+                document.getElementById('Cust_Name').value = "";
+                document.getElementById('Cust_MobileNo').value = null;
+
+                //Grid null
+                $('#order-items-table tbody').empty();
+
+
+                $.ajax({
+                    "url": "@Url.Action("CheckTable","Master")",
+                    "method": "GET",
+                    "contentType": "application/json",
+                    "data": { TableNumber: tableNumber },
+                    "success": function (response) {
+
+                        console.log(response);
+                    },
+                    "error": function (response) {
+
+                        console.log(response);
+                    }
+                });
+            }
+            else {
+                console.log("undefined");
+            }
+        }
+
     }
 
     $('#btn_AddOrderItems').click(function () {
