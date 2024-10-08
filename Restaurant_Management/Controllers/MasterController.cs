@@ -92,13 +92,25 @@ namespace Restaurant_Management.Controllers
         {
             // Map and save the order item
             tblOrderItem newOrderItem = _Map.Map<tblOrderItem>(obj);
+            newOrderItem.TotalPrice = newOrderItem.Quantity * newOrderItem.ItemPrice;
 
              _OrderItems.Save_OrderItems(newOrderItem);
 
             // Get and return the updated list of order items
             List<tblOrderItem> OrderItemList = _Master.GetOrderItemListByOrderId(Convert.ToInt32(obj.OrderId));
 
-            return Json(OrderItemList); 
+            var result = OrderItemList.Select(item => new
+            {
+                item.Id,
+                item.tblMenu.ItemName ,
+                item.ItemPrice,
+                item.TotalPrice,
+                item.Quantity,
+                item.Status,
+                item.Portion
+            }).ToList();
+
+            return Json(result);
         }
 
 

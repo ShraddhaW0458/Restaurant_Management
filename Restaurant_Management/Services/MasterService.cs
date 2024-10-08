@@ -1,6 +1,8 @@
 ﻿using Restaurant_Management.IServices;
+using Restaurant_Management.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 
@@ -30,9 +32,9 @@ namespace Restaurant_Management.Services
 
         public List<tblOrderItem> GetOrderItemListByOrderId(int Id)
         {
-            
-            return ctx.tblOrderItems.Where(w => w.OrderId == Id).Select(s => new { s.Id, s.MenuId, s.Quantity, s.ItemPrice, s.TotalPrice, s.Portion, s.OrderId }).ToList();
 
+            List<tblOrderItem> List = ctx.tblOrderItems.Where(w => w.OrderId == Id).ToList();
+            return List;
         }
     }
 }

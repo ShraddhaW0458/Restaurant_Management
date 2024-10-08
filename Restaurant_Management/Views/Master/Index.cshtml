@@ -75,7 +75,7 @@
         <div class="row mt-2 card-body shadow-sm rounded-2 p-2">
             <h6>Order Item List</h6>
             <hr />
-            <table class="table table-responsive table-bordered ">
+            <table id="order-items-table" class="table table-responsive table-bordered">
                 <thead style="vertical-align: middle">
                     <tr>
                         <th>Id</th>
@@ -85,27 +85,14 @@
                         <th>Item Price</th>
                         <th>Total Price</th>
                         <th>Status</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
-
                 <tbody>
-                    @*@foreach (var item in ViewBag.OrderItems)
-                        {
-                            <tr>
-                                <td>@item.Id</td>
-                                <td>@item.MenuName</td>
-                                <td>@item.Portion</td>
-                                <td>@item.ItemPrice</td>
-                                <td>@item.TotalPrice</td>
-                                <td>@item.Status</td>
-                                <td>
-                                    @Html.ActionLink("Edit", "", new { Id = item.Id }, new { @class = "btn btn-sm btn-info" })
-                                    @Html.ActionLink("Delete", "", new { Id = item.Id }, new { @class = "btn btn-sm btn-danger" })
-                                </td>
-                            </tr>
-                        }*@
+                    <!-- Rows will be dynamically appended here -->
                 </tbody>
             </table>
+
         </div>
 
         @*Modal pop up*@
@@ -239,10 +226,30 @@
                     OrderId: OrderId ? parseInt(OrderId) : null
                 }),
              "success": function (response) {
-                    console.log("success", response);
+                 console.log("success", response);
 
+                 $('#order-items-table tbody').empty();
 
-                },
+                 // Loop through the response and append rows to the table
+                 $.each(response, function (index, item) {
+                     var row = '<tr>' +
+                         '<td>' + item.Id + '</td>' +
+                         '<td>' + (item.ItemName || 'N/A') + '</td>' + // assuming MenuName is not part of the response
+                         '<td>' + item.Portion + '</td>' +
+                         '<td>' + item.Quantity + '</td>' +
+                         '<td>' + item.ItemPrice + '</td>' +
+                         '<td>' + (item.TotalPrice !== null ? item.TotalPrice : 'N/A') + '</td>' +
+                         '<td>' + item.Status + '</td>' +
+                         '<td>' +
+                         '<a href="/your-edit-url/' + item.Id + '" class="btn btn-sm btn-info">Edit</a> ' +
+                         '<a href="/your-delete-url/' + item.Id + '" class="btn btn-sm btn-danger">Delete</a>' +
+                         '</td>' +
+                         '</tr>';
+
+                     // Append the row to the table body
+                     $('#order-items-table tbody').append(row);
+                 });
+             },
              "error": function (response) {
                  console.log("error", response);
                 }
