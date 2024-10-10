@@ -28,6 +28,7 @@ namespace Restaurant_Management.Controllers
             _Map = new Mapper(mapConfig);
         }
         // GET: Customer
+        #region Create Customer
         [HttpGet]
         public ActionResult CreateCustomer(int Id = 0)
         {
@@ -56,7 +57,8 @@ namespace Restaurant_Management.Controllers
             }
 
             return View(new Customer());
-        }
+        } 
+        #endregion
 
         [HttpPost]
         public ActionResult CreateCustomer(Customer cust)

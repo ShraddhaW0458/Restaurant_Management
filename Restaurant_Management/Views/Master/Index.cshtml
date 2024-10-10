@@ -156,14 +156,12 @@
 
                         <!-- Created By (Read-Only or Editable) -->
                         <div class="form-group">
-                            <label for="CreatedBy">Created By</label>
-                            <input type="text" id="CreatedBy" name="CreatedBy" class="form-control" value="1" readonly />
+                            <input type="hidden" id="CreatedBy" name="CreatedBy" class="form-control" value="1" readonly />
                         </div>
 
                         <!-- Created On (Read-Only) -->
                         <div class="form-group">
-                            <label for="CreatedOn">Created On</label>
-                            <input type="text" id="CreatedOn" name="CreatedOn" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")" readonly />
+                            <input type="hidden" id="CreatedOn" name="CreatedOn" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")" readonly />
                         </div>
 
                     </div>
@@ -181,7 +179,6 @@
 <script>
 
     var PreviousSelectedTable = 0;
-
 
     //Select 4     //5 updated
     function updateTableId(button) {

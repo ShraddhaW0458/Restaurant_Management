@@ -37,6 +37,8 @@ namespace Restaurant_Management.Controllers
 
         }
         Restaurant_ManagementEntities1 ctx = new Restaurant_ManagementEntities1();
+
+        [HttpGet]
         // GET: Master
         public ActionResult Index()
         {
@@ -50,19 +52,19 @@ namespace Restaurant_Management.Controllers
             return View();
         }
 
+        #region Save Customer
         [HttpPost]
-
         public ActionResult SaveCustomer(Customer obj)
         {
             //Map Customer to tblCustomer.
             tblCustomer newCust = _Map.Map<tblCustomer>(obj);
 
             //mapped customer obj(entity) saved in db. and get that saved customer Id.
-            int customerId =  _Customer.Save_Cust(newCust);
+            int customerId = _Customer.Save_Cust(newCust);
 
             //Create reservation obj
             tblReservation r = new tblReservation();
-            r.TableId =  Convert.ToInt32(obj.TableNumber);     //This will get from custObj means from UI side
+            r.TableId = Convert.ToInt32(obj.TableNumber);     //This will get from custObj means from UI side
             r.CustomerId = customerId;         //This will get from above saved customer
             r.Status = "O";
             r.ReservationTimeFrom = DateTime.Now;
@@ -83,18 +85,20 @@ namespace Restaurant_Management.Controllers
             //Save above order object in db, and get that saved  order Id.
             int orderId = _Master.SaveOrder(o);
 
-            return Json(orderId);
+            return Json(orderId, JsonRequestBehavior.AllowGet);
         }
+        #endregion
 
+
+        #region Save Order Items 
         [HttpPost]
-
-        public ActionResult SaveOrderItems( Order_Items obj)
+        public ActionResult SaveOrderItems(Order_Items obj)
         {
             // Map and save the order item
             tblOrderItem newOrderItem = _Map.Map<tblOrderItem>(obj);
             newOrderItem.TotalPrice = newOrderItem.Quantity * newOrderItem.ItemPrice;
 
-             _OrderItems.Save_OrderItems(newOrderItem);
+            _OrderItems.Save_OrderItems(newOrderItem);
 
             // Get and return the updated list of order items
             List<tblOrderItem> OrderItemList = _Master.GetOrderItemListByOrderId(Convert.ToInt32(obj.OrderId));
@@ -102,7 +106,7 @@ namespace Restaurant_Management.Controllers
             var result = OrderItemList.Select(item => new
             {
                 item.Id,
-                item.tblMenu.ItemName ,
+                item.tblMenu.ItemName,
                 item.ItemPrice,
                 item.TotalPrice,
                 item.Quantity,
@@ -110,18 +114,22 @@ namespace Restaurant_Management.Controllers
                 item.Portion
             }).ToList();
 
-            return Json(result);
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
+        #endregion
+
+
+        #region Check Reservation
         public ActionResult CheckTable(int TableNumber)
         {
-            var res =  ctx.tblReservations
+            var res = ctx.tblReservations
                 .Where(w => w.TableId == TableNumber)
                 .OrderByDescending(o => o.Status)
-                .Select(s => new { s.Status, s.TableId, s.CustomerId, s.Id})
+                .Select(s => new { s.Status, s.TableId, s.CustomerId, s.Id })
                 .FirstOrDefault();
 
-            if(res.Status != "A")
+            if (res.Status != "A")
             {
                 tblCustomer c = ctx.tblCustomers.Where(w => w.Id == res.CustomerId).FirstOrDefault();
                 tblOrder o = ctx.tblOrders.Where(w => w.ReservationId == res.Id).FirstOrDefault();
@@ -143,22 +151,23 @@ namespace Restaurant_Management.Controllers
                 {
                     customerName = c.Name,  // Adjust to actual property for customer name
                     customerMobileNo = c.MobileNo,
-                    
+
                     orderId = o.Id,
-                    
+
                     orderItems = result // The list of selected items
                 };
 
-                return Json(output);
+                return Json(output, JsonRequestBehavior.AllowGet);
 
             }
             else
             {
-                return Json(true);
+                return Json(false);
             }
 
-            return Json(null);
         }
+        #endregion
+
 
     }
 }
