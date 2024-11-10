@@ -18,8 +18,13 @@ namespace Restaurant_Management
         public string TableNumber { get; set; }
         public Nullable<int> Seats { get; set; }
         public string Discription { get; set; }
+
+        public string Status { get; set; }
+
         public Nullable<int> BranchId { get; set; }
     
         public virtual tblBranch tblBranch { get; set; }
+
+
     }
 }

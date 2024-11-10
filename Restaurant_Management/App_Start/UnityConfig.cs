@@ -28,6 +28,8 @@ namespace Restaurant_Management
             container.RegisterType<ITables, TablesService>();
             container.RegisterType<IMaster, MasterService>();
             container.RegisterType<IOrderItems, OrderItemsService>();
+            container.RegisterType<IOrder, OrderService>();
+            container.RegisterType<IReservation, ReservationService>();
 
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));
         }

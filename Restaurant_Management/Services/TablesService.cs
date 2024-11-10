@@ -1,4 +1,5 @@
 ﻿using Restaurant_Management.IServices;
+using Restaurant_Management.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,10 +41,26 @@ namespace Restaurant_Management.Services
            return ctx.tblTables.ToList();
         }
 
-        public List<tblTable> GetAll_ByBranchId(int Branch_Id)
+        public List<Tables> GetAll_ByBranchId(int Branch_Id)
         {
-            return ctx.tblTables.Where(w=>w.BranchId == Branch_Id).ToList();
+            var result = (from t in ctx.tblTables
+                          join r in (
+                              from res in ctx.tblReservations
+                              group res by res.TableId into g
+                              let LatestReservation = g.OrderByDescending(x => x.CreatedOn).FirstOrDefault()
+                              select LatestReservation
+                          ) on t.TableNumber equals r.TableId.ToString()
+                          where t.BranchId == Branch_Id
+                          select new Tables
+                          {
+                              TableNumber = t.TableNumber,
+                              BranchId = t.BranchId,
+                              Status = r.Status
+                          }).Distinct().ToList();
+
+            return result;
         }
+
 
 
         public bool Save(tblTable obj)

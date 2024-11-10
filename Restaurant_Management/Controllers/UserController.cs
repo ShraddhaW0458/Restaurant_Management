@@ -110,7 +110,7 @@ namespace Restaurant_Management.Controllers
                 {
                     TempData["BranchId_LogUser"] = User.BranchId;    
                     //Activate User Context
-                    return RedirectToAction("Create", "User");
+                    return RedirectToAction("Index", "Master");
                 }
 
                 ViewBag.Msg = "Invalid Credentials.Please try again.";

@@ -1,4 +1,4 @@
-﻿
+﻿@model Restaurant_Management.Models.Master
 
 @{
     ViewBag.Title = "Index";
@@ -18,13 +18,22 @@
         @foreach (var item in ViewBag.Tables)
         {
 
-            <button class="btn btn-sm btn-secondary" value="@item.TableNumber" style="position: relative; width: 100px; height: 100px;" onclick="updateTableId(this)">
-                @item.TableNumber
-                <svg width="16" height="16" fill="currentColor" class="bi bi-circle-fill" viewBox="0 0 16 16"
-                     style="position: absolute; top: 5px; right: 5px;">
-                    <circle cx="8" cy="8" r="8" />
-                </svg>
-            </button>
+        <button class="btn btn-sm btn-secondary" value="@item.TableNumber" style="position: relative; width: 100px; height: 100px;" onclick="updateTableId(this)">
+            @item.TableNumber
+            @if(item.Status == "O" || item.Status == "R"){
+                    <svg width="16" height="16" fill="red" class="bi bi-circle" viewBox="0 0 16 16"
+                         style="position: absolute; top: 5px; right: 5px;">
+                        <circle cx="8" cy="8" r="8" />
+                    </svg>
+            }
+            else{
+                    <svg width="16" height="16" fill="green" class="bi bi-circle-fill" viewBox="0 0 16 16"
+                         style="position: absolute; top: 5px; right: 5px;">
+                        <circle cx="8" cy="8" r="8" />
+                    </svg>
+            }
+            
+        </button>
 
 
         }
@@ -43,6 +52,8 @@
                 <input id="txtTbl_Number" type="number" disabled="disabled" name="name" value="" />
             </div>
         </div>
+
+
         <!--Customer Details-->
         <div class="row mt-2 card-body shadow-sm rounded-2 p-2">
             <h6 style="display:flex; width:300px; float:left">Customer Details</h6>
@@ -53,6 +64,8 @@
             @*<div class="col-6"><input class="form-control" type="text" id="Cust_Address" placeholder="Customer Address" value="" /></div>*@
 
         </div>
+
+
         <!--Order Detatils-->
         <div class="row mt-2 card-body shadow-sm rounded-2 p-2">
             <h6>Order Details</h6>
@@ -71,9 +84,12 @@
                 <input type="text" id="Order_Id" disabled="disabled" style="width: 80px;" />
             </div>
         </div>
+
+
         <!--List of order items-->
         <div class="row mt-2 card-body shadow-sm rounded-2 p-2">
-            <h6>Order Item List</h6>
+            <h6 style="display:flex; width:300px; float:left">Order Item List</h6>
+            <button style="width:100px" type="button" id="btnCheckOut" class="btn btn-sm btn-success mb-2">Check Out</button>
             <hr />
             <table id="order-items-table" class="table table-responsive table-bordered">
                 <thead style="vertical-align: middle">
@@ -106,13 +122,13 @@
                     <div class="modal-body">
                         <p>Modal body text goes here.</p>
                         <!-- Hidden OrderId Input -->
-                        <input type="hidden" id="Order_Id" name="OrderId"  /> 
+                        <input type="hidden" id="Order_Id" name="OrderId" />
 
                         <!-- Menu Dropdown -->
                         <div class="form-group">
                             <label for="MenuId">Menu Item</label>
                             <select id="MenuId" name="MenuId" class="form-control">
-                                <option value="">~Select an item~</option>
+                                <option value=""  disabled selected hidden>~Select an item~</option>
                                 @foreach (var item in ViewBag.ItemList as SelectList)
                                 {
                                     <option value="@item.Value">@item.Text</option>
@@ -167,11 +183,33 @@
                     </div>
                     <div class="modal-footer">
                         <button id="ModalPopup_close" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button id="btnSave_OrderItems" type="button" class="btn btn-primary">Save changes</button>
+                        <button id="btnSave_OrderItems" type="button" class="btn btn-primary">Save</button>
                     </div>
                 </div>
             </div>
         </div>
+
+        @*Modal pop up for bill*@
+        <div id="Bill_ModalPopup" class="modal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Bill Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Modal body text goes here.</p>
+                        
+
+                    </div>
+                    <div class="modal-footer">
+                        <button id="btnPrint_Bill" type="button" class="btn btn-primary">Print</button> <!-- Replaced Close with Print -->
+                        <button id="btnPaid_OrderItems" type="button" class="btn btn-success">Paid</button> <!-- Replaced Save changes with Paid -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    
     
     </div>
 </div>
@@ -189,8 +227,8 @@
         }
 
 
-        var tableNumber = button.value;     // This fetches the value from the button   //updated 5
-        document.getElementById("txtTbl_Number").value = tableNumber;    // Set the textbox value to the table number   //4  //5  
+        var tableNumber = button.value;     // This fetches the value from selected table button   //updated 5
+        document.getElementById("txtTbl_Number").value = tableNumber;    // Set the textbox value to the updated table number   //4  //5
 
         if (PreviousSelectedTable != null && PreviousSelectedTable != undefined) {
             if (PreviousSelectedTable == tableNumber) {
@@ -198,12 +236,12 @@
                 console.log("PreviousSelectedTable, tableNumber", PreviousSelectedTable, tableNumber);
 
             }
-            else if (PreviousSelectedTable != tableNumber) {
+            else if (PreviousSelectedTable != tableNumber) {                  //new customer order details will added 
 
                 console.log("PreviousSelectedTable, tableNumber", PreviousSelectedTable, tableNumber);
 
                 //Modal Popup null
-                document.getElementById('MenuId').value = null;
+                document.getElementById('MenuId').value = null;            
                 document.getElementById('Quantity').value = null;
                 document.getElementById('ItemPrice').value = null;
                 document.getElementById('Status').value = "";
@@ -226,6 +264,35 @@
                     "success": function (response) {
 
                         console.log(response);
+
+                        document.getElementById('Order_Id').value = response.orderId;
+
+                        //customer details null
+                        document.getElementById('Cust_Name').value = response.customerName;
+                        document.getElementById('Cust_MobileNo').value = response.customerMobileNo;
+
+                        $('#order-items-table tbody').empty();
+
+                        // Loop through the response and append rows to the table
+                        $.each(response.orderItems, function (index, item) {
+                            var row = '<tr>' +
+                                '<td>' + item.Id + '</td>' +
+                                '<td>' + (item.ItemName || 'N/A') + '</td>' + // assuming MenuName is not part of the response
+                                '<td>' + item.Portion + '</td>' +
+                                '<td>' + item.Quantity + '</td>' +
+                                '<td>' + item.ItemPrice + '</td>' +
+                                '<td>' + (item.TotalPrice !== null ? item.TotalPrice : 'N/A') + '</td>' +
+                                '<td>' + item.Status + '</td>' +
+                                '<td>' +
+                                '<a href="/your-edit-url/' + item.Id + '" class="btn btn-sm btn-info">Edit</a> ' +
+                                '<a href="/your-delete-url/' + item.Id + '" class="btn btn-sm btn-danger">Delete</a>' +
+                                '</td>' +
+                                '</tr>';
+
+                            // Append the row to the table body
+                            $('#order-items-table tbody').append(row);
+                        });
+
                     },
                     "error": function (response) {
 
@@ -254,7 +321,8 @@
 
     $('#btnSave_OrderItems').click(function () {
 
-        alert("ok");
+        /*alert("ok");*/
+
         $('#Modal_Popup').hide();
         var MenuId = document.getElementById('MenuId').value || null;
         var Quantity = document.getElementById('Quantity').value || null;
@@ -323,11 +391,18 @@
 
             $.ajax({
                 "url": "@Url.Action("SaveCustomer", "Master")",
-                "method": "post",
+                "method": "POST",
                 "contentType": "application/json",
                 "data": JSON.stringify({ Name: custName, MobileNo: custMobNo, TableNumber: tableNumber }),
                 "success": function (success) {
                     console.log("success", success);
+
+                    // Find the button by tableNumber and change its SVG color to red
+                    var tableButton = $('button[value="' + tableNumber + '"]');
+                    var svgElement = tableButton.find('svg');
+
+                    // Change the fill color of the svg to red
+                    svgElement.attr('fill', 'red');
 
                     document.getElementById('Order_Id').value = success;
                 },
@@ -337,6 +412,189 @@
             });
         }
     });
+
+    $("#btnCheckOut").click(function () {
+        var orderId = document.getElementById('Order_Id').value;
+
+        var GrandTotal = 0;
+        //if (OrderItems && OrderItems.Length > 0) {
+        //    OrderItems.foreach(function (item) {
+        //        GrandTotal = GrandTotal + item.TotalPrice;
+        //    });
+        //}
+
+        $.each(function (item) {
+            GrandTotal = GrandTotal + item.TotalPrice;
+        });
+
+        // Now, send the orderId and computed grandTotal to the server via AJAX
+        $.ajax({
+            "url": "@Url.Action("CheckOut", "Master")",
+            "method": "POST",
+            "data": { OrderId: orderId, GrandTotal: GrandTotal },
+            "success": function (response) {
+                if (response.success) {
+                    console.log("CheckOut Successfull", response.billData)
+
+                    // Bind the returned GrandTotal and result (OrderItemList) to the modal
+                    $('#Bill_ModalPopup .modal-body').html(generateBillHTML(response.result, response.grandTotal, response.billData));
+
+                    // Open the modal
+                    $('#Bill_ModalPopup').modal('show');
+                }
+                else {
+                    alert("CheckOut Failed", response.Message)
+                }
+            },
+            "error": function (error) {
+                console.log("error", error);
+            }
+
+        });
+    });
+
+
+    // Helper function to generate the HTML for the bill details
+    var billOrderId = 0;
+    var FoodTotal = 0;
+
+    function generateBillHTML(orderItems, grandTotal, billData) {
+
+        billOrderId = billData.orderId;
+        var CGST = (grandTotal * (2.5 / 100)).toFixed(2);
+        var SGST = (grandTotal * (2.5 / 100)).toFixed(2);
+        FoodTotal = (grandTotal + parseFloat(CGST) + parseFloat(SGST)).toFixed(2);
+
+        var billHTML = '';
+
+        // Hotel name and address in the center
+        billHTML += '<div style="text-align: center;">';
+        billHTML += '<h4>' + billData.RestaurantName + '</h4>';
+        billHTML += '<p>' + billData.RestAddress + '</p>';
+        billHTML += '</div>';
+
+        // Tax invoice title and header
+        billHTML += '<h5 style="text-align: center;">-------------Tax Invoice--------</h5>';
+        billHTML += '<p>Date: ' + billData.DateNow + ' &nbsp;&nbsp;&nbsp;&nbsp; B No: ' + billData.BillNo + '</p>';
+        billHTML += '<p>T No: ' + billData.TableNumber + ' &nbsp;&nbsp;&nbsp;&nbsp; B No: ' + billData.OrderId + '</p>';
+
+        // Table for order items
+        billHTML += '<table class="table">';
+        billHTML += '<thead><tr><th>Item</th><th>Price</th><th>Quantity</th><th>Total</th></tr></thead>';
+        billHTML += '<tbody>';
+
+        $.each(orderItems, function (index, item) {
+            billHTML += '<tr>';
+            billHTML += '<td>' + item.ItemName + '</td>';
+            billHTML += '<td>' + item.ItemPrice.toFixed(2) + '</td>';
+            billHTML += '<td>' + item.Quantity + '</td>';
+            billHTML += '<td>' + item.TotalPrice.toFixed(2) + '</td>';
+            billHTML += '</tr>';
+        });
+
+        billHTML += '</tbody>';
+        billHTML += '</table>';
+
+        // Grand total and tax breakdown
+        billHTML += '<p><strong>Grand Total: </strong>' + grandTotal.toFixed(2) + '</p>';
+        billHTML += '<p style="text-align: right;">';
+        billHTML += 'CGST: ' + CGST + '<br>';
+        billHTML += 'SGST: ' + SGST + '<br>';
+        billHTML += '------------------------------------------<br>';
+        billHTML += 'FoodTotal: ' + FoodTotal + '<br>';
+        billHTML += '</p>';
+
+        // GST number and final total
+        billHTML += '<hr>';
+        billHTML += '<p style="text-align: left;">GSTNO: ' + billData.GSTNO + '</p>';
+        billHTML += '<p style="text-align: right;"><strong>Total: ' + FoodTotal + '</strong></p>';
+        billHTML += '<hr>';
+
+        // Thank you message
+        billHTML += '<p style="text-align: center;">-------------------------Thank you, visit again--------------------------</p>';
+
+        return billHTML;
+    }
+
+    // Print functionality
+    $('#btnPrint_Bill').click(function () {
+        alert("Print");
+        var billContent = $('#Bill_ModalPopup .modal-body').html();
+
+        // Open a new window
+        var printWindow = window.open('', '_blank', 'width=800,height=600');
+
+        // Write the content to the new window
+        printWindow.document.write('<html><head><title>Bill Print</title>');
+        printWindow.document.write('<style>table {width: 100%; border-collapse: collapse;} th, td {border: 1px solid black; padding: 8px; text-align: left;}</style>');
+        printWindow.document.write('</head><body>');
+        printWindow.document.write(billContent); // Insert the bill content
+        printWindow.document.write('</body></html>');
+
+        printWindow.document.close();
+
+        // Trigger the print dialog
+        printWindow.print();
+    });
+
+    // Paid button functionality
+    $('#btnPaid_OrderItems').click(function () {
+        //alert("Payment Successful!");
+        console.log(billOrderId, FoodTotal);
+
+        if (billOrderId != 0 && FoodTotal!=0) {
+            //alert(billOrderId, FoodTotal);
+
+            $.ajax({
+                "url": "@Url.Action("SavePayment", "Master")",
+                "method": "POST",
+                "contentType": "application/json",
+                "data": JSON.stringify({ billOrderId: billOrderId, FoodTotal: FoodTotal}),
+                "success": function (response) {
+
+                    console.log(response);
+
+                    var tableNumber = document.getElementById('txtTbl_Number').value;
+
+                    // Find the button by tableNumber and change its SVG color to red
+                    var tableButton = $('button[value="' + tableNumber + '"]');
+                    var svgElement = tableButton.find('svg');
+
+                    // Change the fill color of the svg to red
+                    svgElement.attr('fill', 'green');
+
+                    $('#Bill_ModalPopup').modal('hide');
+
+                    //Modal Popup null
+                    document.getElementById('MenuId').value = null;
+                    document.getElementById('Quantity').value = null;
+                    document.getElementById('ItemPrice').value = null;
+                    document.getElementById('Status').value = "";
+                    document.getElementById('Portion').value = "";
+                    document.getElementById('Order_Id').value = null;
+
+                    //Table number null
+                    document.getElementById('txtTbl_Number').value = null;
+
+                    //customer details null
+                    document.getElementById('Cust_Name').value = "";
+                    document.getElementById('Cust_MobileNo').value = null;
+
+                    //Grid null
+                    $('#order-items-table tbody').empty();
+
+                    alert(response);
+                },
+                "error": function (error) {
+                    console.log(error);
+                }
+
+            });
+        }
+        
+    });
+
+
 </script>
 
 

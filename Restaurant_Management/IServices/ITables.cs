@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Restaurant_Management.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,7 +17,7 @@ namespace Restaurant_Management.IServices
 
         List<tblTable> GetAll();
 
-        List<tblTable> GetAll_ByBranchId(int Branch_Id);
+        List<Tables> GetAll_ByBranchId(int Branch_Id);
 
     }
 }
